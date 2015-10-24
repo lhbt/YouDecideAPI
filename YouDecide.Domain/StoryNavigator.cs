@@ -168,14 +168,23 @@ namespace YouDecide.Domain
                     GameOptions = new List<GameOption>()
                 };
 
-            LoadOptions();
-
-            for (int optionCount = 1; optionCount <= _currentStoryPoints.Count; optionCount++)
+            if (_currentStoryPoints.Count > 0)
+            {
+                for (int optionCount = 1; optionCount <= _currentStoryPoints.Count; optionCount++)
+                {
+                    currentGameState.GameOptions.Add(new GameOption
+                    {
+                        OptionNumber = optionCount,
+                        Option = _currentStoryPoints[optionCount - 1].Child
+                    });
+                }
+            }
+            else
             {
                 currentGameState.GameOptions.Add(new GameOption
                 {
-                    OptionNumber = optionCount,
-                    Option = _currentStoryPoints[optionCount - 1].Child
+                    OptionNumber = 0,
+                    Option = "There is no point selecting this option. YOU ARE DEAD (you fool). But you can come back to life if you go back (cos we're nice like that)."
                 });
             }
 
