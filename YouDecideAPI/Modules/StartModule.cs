@@ -12,7 +12,7 @@ namespace YouDecideAPI.Modules
         {
             Get["/start"] = parameters =>
             {
-                return "initialised";
+                return Response.AsJson("initial game state");
             };
         }
     }
