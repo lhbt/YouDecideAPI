@@ -9,5 +9,7 @@ namespace YouDecide.Domain
     public interface IDataAccess
     {
         Task<List<StoryPoint>> FetchAllStoryPoints();
+        Task<List<GameState>> GetGameState(int gameId);
+        Task UpdateGameState(int gameId);
     }
 }
