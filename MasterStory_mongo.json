@@ -1,7 +1,6 @@
-{"_id": "001","Parent" : "nothing","Child": "null"}
-{"_id": "002","Parent" : "null","Child": "In The Beginningz"}
-{"_id": "003","Parent" : "In The Beginningz","Child": "There was a word. And the word was"}
-{"_id": "004","Parent" : "There was a word. And the word was","Child": "God."}
+{"_id": "001","Parent" : "nothing","Child": "In the beginning . . ."}
+{"_id": "003","Parent" : "In the beginning . . .","Child": "In the beginning, there was a word. And the word was"}
+{"_id": "004","Parent" : "In the beginning, there was a word. And the word was","Child": "God."}
 {"_id": "005","Parent" : "God.","Child": "God was a small shy geek."}
 {"_id": "006","Parent" : "God was a small shy geek.","Child": "All God wanted was to be loved."}
 {"_id": "007","Parent" : "All God wanted was to be loved.","Child": "His plan was to make himself lovable by growing a beard."}
@@ -174,25 +173,25 @@
 {"_id": "174","Parent" : "You decide that your mission is to identify the slaves and free them from her tyranny.","Child": "You turn left."}
 {"_id": "175","Parent" : "God.","Child": "God was a pigeon."}
 {"_id": "176","Parent" : "God was a pigeon.","Child": "If only that were true. But it isn't. You lose."}
-{"_id": "177","Parent" : "There was a word. And the word was","Child": "Constantinople."}
+{"_id": "177","Parent" : "In the beginning, there was a word. And the word was","Child": "Constantinople."}
 {"_id": "178","Parent" : "Constantinople.","Child": "No it wasn't. Goodbye."}
-{"_id": "179","Parent" : "There was a word. And the word was","Child": "Floccinaucinihilipilification."}
+{"_id": "179","Parent" : "In the beginning, there was a word. And the word was","Child": "Floccinaucinihilipilification."}
 {"_id": "180","Parent" : "Floccinaucinihilipilification.","Child": "This is the longest word in the English language."}
 {"_id": "181","Parent" : "This is the longest word in the English language.","Child": "No it isn't. Loser."}
 {"_id": "182","Parent" : "Floccinaucinihilipilification.","Child": "This word has twenty-five syllables."}
 {"_id": "183","Parent" : "This word has twenty-five syllables.","Child": "No it doesn't. Do you even know what a syllable is? Can you even count? Goodbye."}
 {"_id": "184","Parent" : "Floccinaucinihilipilification.","Child": "This is your favourite word."}
 {"_id": "185","Parent" : "This is your favourite word.","Child": "Aw, really? Mine too. That won't win you the game though. Now bog off."}
-{"_id": "186","Parent" : "In The Beginningz","Child": "There were three developers."}
-{"_id": "187","Parent" : "There were three developers.","Child": "You would like to meet them, because they will lead you to a PRIZE."}
+{"_id": "186","Parent" : "In the beginning . . .","Child": "In the beginning, there were three developers."}
+{"_id": "187","Parent" : "In the beginning, there were three developers.","Child": "You would like to meet them, because they will lead you to a PRIZE."}
 {"_id": "188","Parent" : "You would like to meet them, because they will lead you to a PRIZE.","Child": "You close your eyes."}
 {"_id": "189","Parent" : "You would like to meet them, because they will lead you to a PRIZE.","Child": "You fall over."}
 {"_id": "190","Parent" : "You would like to meet them, because they will lead you to a PRIZE.","Child": "You turn left."}
-{"_id": "191","Parent" : "There were three developers.","Child": "If you come this way, you'll see this amazing thing wot they (and you) made."}
+{"_id": "191","Parent" : "In the beginning, there were three developers.","Child": "If you come this way, you'll see this amazing thing wot they (and you) made."}
 {"_id": "192","Parent" : "If you come this way, you'll see this amazing thing wot they (and you) made.","Child": "You go upstairs."}
 {"_id": "193","Parent" : "If you come this way, you'll see this amazing thing wot they (and you) made.","Child": "You turn left."}
 {"_id": "194","Parent" : "If you come this way, you'll see this amazing thing wot they (and you) made.","Child": "You turn right."}
-{"_id": "195","Parent" : "There were three developers.","Child": "You're all going to write some really cool code together."}
+{"_id": "195","Parent" : "In the beginning, there were three developers.","Child": "You're all going to write some really cool code together."}
 {"_id": "196","Parent" : "You're all going to write some really cool code together.","Child": "You start by creating a walking skeleton."}
 {"_id": "197","Parent" : "You start by creating a walking skeleton.","Child": "It comes to life!"}
 {"_id": "198","Parent" : "It comes to life!","Child": "It eats you up and spits out your bones. Well, come on. What did you think was going to happen?"}
@@ -221,10 +220,10 @@
 {"_id": "221","Parent" : "You write a fantastic switch statement containing multiple return statements.","Child": "Nuh-uh. Goodbye."}
 {"_id": "222","Parent" : "You're all going to write some really cool code together.","Child": "You hire ten Russian coders to do your bit for you."}
 {"_id": "223","Parent" : "You hire ten Russian coders to do your bit for you.","Child": "Actually, that's quite ingenious. But you still lose."}
-{"_id": "224","Parent" : "In The Beginningz","Child": "There was an antelope."}
-{"_id": "225","Parent" : "There was an antelope.","Child": "It was called Penelope, and it had acne."}
+{"_id": "224","Parent" : "In the beginning . . .","Child": "In the beginning, there was an antelope."}
+{"_id": "225","Parent" : "In the beginning, there was an antelope.","Child": "It was called Penelope, and it had acne."}
 {"_id": "226","Parent" : "It was called Penelope, and it had acne.","Child": "Infectious acne. INFECTIOUS DEADLY ACNE. You die."}
-{"_id": "227","Parent" : "There was an antelope.","Child": "It's BEHIND YOU RIGHT NOW!"}
+{"_id": "227","Parent" : "In the beginning, there was an antelope.","Child": "It's BEHIND YOU RIGHT NOW!"}
 {"_id": "228","Parent" : "It's BEHIND YOU RIGHT NOW!","Child": "Did you look? If you did, you're an idiot. If you didn't, it was there all along, and you'll never know unless you look. In which case you're an idiot. You lose either way."}
-{"_id": "229","Parent" : "There was an antelope.","Child": "It wasn't called Penelope, but it did pronounce Antelope 'An-teller-pee'."}
+{"_id": "229","Parent" : "In the beginning, there was an antelope.","Child": "It wasn't called Penelope, but it did pronounce Antelope 'An-teller-pee'."}
 {"_id": "230","Parent" : "It wasn't called Penelope, but it did pronounce Antelope 'An-teller-pee'.","Child": "Nobody would do that. That's just stupid. Go home."}
