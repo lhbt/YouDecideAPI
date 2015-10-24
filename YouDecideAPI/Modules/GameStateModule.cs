@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using Newtonsoft.Json;
 using YouDecide.Domain;
 
 namespace YouDecideAPI.Modules
@@ -7,7 +8,9 @@ namespace YouDecideAPI.Modules
     {
         public GameStateModule(IStoryNavigator storyNavigator)
         {
-            Get["/gamestate"] = parameters => Response.AsJson(storyNavigator.GetCurrentGameState());
+            var gameState = storyNavigator.GetCurrentGameState();
+
+            Get["/gamestate"] = parameters => JsonConvert.SerializeObject(gameState);
         }
     }
 }

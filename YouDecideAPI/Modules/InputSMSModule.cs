@@ -1,4 +1,5 @@
 ﻿using Nancy;
+using Newtonsoft.Json;
 using YouDecide.Domain;
 
 namespace YouDecideAPI.Modules
@@ -13,7 +14,7 @@ namespace YouDecideAPI.Modules
 
                 GameState currentState = await storyNavigator.ProcessSMSInputReturningGameState(smsMessage);
 
-                return Response.AsJson(currentState);
+                return JsonConvert.SerializeObject(currentState);
 
                 //string nicelyFormattedOptions = await storyNavigator.ProcessSMSInput(smsMessage);
 

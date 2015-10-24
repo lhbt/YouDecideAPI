@@ -20,7 +20,7 @@ namespace YouDecide.Mongo
 
         public GameStateDataAccess()
         {
-            var url = new MongoUrl(MongoUrl);
+            var url = new MongoUrl(MongoUrlLocal);
             var client = new MongoClient(url);
             Database = client.GetDatabase(url.DatabaseName);
             Collection = Database.GetCollection<GameState>(CollectionName);
