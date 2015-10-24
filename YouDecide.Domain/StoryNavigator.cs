@@ -125,7 +125,7 @@ namespace YouDecide.Domain
 
         public void GoForward(int optionNumber)
         {
-            if (optionNumber <= _currentStoryPoints.Count)
+            if (optionNumber > 0 && optionNumber <= _currentStoryPoints.Count)
             {
                 _currentStoryParents.Add(_currentStoryPoints[optionNumber - 1]);
 
@@ -137,7 +137,7 @@ namespace YouDecide.Domain
         {
             GameState result = null;
 
-            if (optionNumber <= _currentStoryPoints.Count)
+            if (optionNumber > 0 && optionNumber <= _currentStoryPoints.Count)
             {
                 GoForward(optionNumber);
                 result = UpdateAndReturnCurrentGameState();
