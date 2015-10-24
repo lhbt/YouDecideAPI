@@ -12,8 +12,9 @@ namespace YouDecideAPI.Modules
         {
             Get["/input"] = parameters =>
             {
-                string textSent = Request.Query["option"];
-                return string.Format("option: {0}", textSent);
+                string optionChosen = Request.Query["option"];
+
+                return string.Format("option: {0}", optionChosen);
             };
         }
     }
