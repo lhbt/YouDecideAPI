@@ -18,7 +18,7 @@ namespace YouDecide.Mongo
         protected static IMongoDatabase Database;
         private const string CollectionName = "User_mongo";
         private const string MongoUrl =
-            "mongodb://localhost:27017/local";
+            "mongodb://localhost:27017/YouDecide";
 
         public GameStateDataAccess()
         {
@@ -26,32 +26,33 @@ namespace YouDecide.Mongo
             var client = new MongoClient(url);
             Database = client.GetDatabase(url.DatabaseName);
         }
-
-        public async void NewGame(string userId)
+        
+        public void NewGame(int userId)
         {
             var document = new BsonDocument
             {
                 {"_id", userId},
-                {"parent", "test parent"},
-                {"child", "test child"}
+                {"node", "test parent"}
             };
 
             var filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
-            var collection = Database.GetCollection<dynamic>("Users");
+            var collection = Database.GetCollection<Thingy>("Thingies");
 
             // insert object
-            await collection.InsertOneAsync(document);
+            collection.InsertOneAsync(new Thingy { Name = "foo" });
             //await collection.FindOneAndReplaceAsync(filter, document);
             //await collection.FindOneAndUpdateAsync(filter, document);
 
         }
-        public Task<List<BsonDocument>> GetUser(string userId)
+        public List<BsonDocument> GetUser(int userId)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
 
             var collection = Database.GetCollection<BsonDocument>(CollectionName);
 
-            return collection.Find(filter);
+            var test = collection.FindAsync(filter);
+            var item = collection.Find(filter).ToListAsync();
+            return item.Result;   
         }
 
     }
@@ -68,8 +69,8 @@ namespace YouDecide.Mongo
         public void should_do_something()
         {
             var sut = new GameStateDataAccess();
-            sut.NewGame("123");
-            var result = sut.GetUser("123");
+            sut.NewGame(123);
+            var result = sut.GetUser(123);
             Assert.That(true, Is.EqualTo(false));
         }
 
