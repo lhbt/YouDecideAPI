@@ -2,15 +2,15 @@
 {
     internal class SmsMessage
     {
-        public string Id;
+        public string Id="Unset";
 
-        public string To;
+        public string To = "Unset";
 
-        public string From;
+        public string From = "Unset";
 
-        public string Keyword;
+        public string Keyword = "Unset";
 
-        public string Content;
+        public string Content = "Unset";
 
         public string FullMessage()
         {

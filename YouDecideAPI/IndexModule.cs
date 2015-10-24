@@ -4,7 +4,7 @@
     using Nancy.ModelBinding;
     public class IndexModule : NancyModule
     {
-        private static SmsMessage nastyGlobal;
+        private static SmsMessage nastyGlobal = new SmsMessage();
         public IndexModule()
         {
             Get["/"] = parameters =>
