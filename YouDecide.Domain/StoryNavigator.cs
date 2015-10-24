@@ -14,10 +14,12 @@ namespace YouDecide.Domain
 
         static List<StoryPoint> _storyTree;
         static List<StoryPoint> _currentStaticStoryParents;
+        static List<StoryPoint> _currentStaticStoryPoints;
 
-        List<StoryPoint> _currentStoryPoints;
+        private List<StoryPoint> _currentStoryPoints;
         private GameState _currentGameState;
         List<StoryPoint> _currentStoryParents;
+        private string _deathlyDeathText;
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
@@ -50,6 +52,7 @@ namespace YouDecide.Domain
         {
             await TurnInitialise();
             LoadStoryParentsForSinglePlayer(gameId);
+            LoadStoryPointsForSinglePlayer(gameId);
 
             if (smsMessage.All(Char.IsDigit))
             {
@@ -61,6 +64,7 @@ namespace YouDecide.Domain
             }
 
             StoreStoryParentsForSinglePlayer(gameId);
+            StoreStoryPointsForSinglePlayer(gameId);
 
             return _currentGameState;
         }
@@ -73,6 +77,14 @@ namespace YouDecide.Domain
         {
         }
 
+        private void LoadStoryPointsForMultiPlayer(string gameId)
+        {
+        }
+
+        private void StoreStoryPointsForMultiPlayer(string gameId)
+        {
+        }
+
         private void LoadStoryParentsForSinglePlayer(string gameId)
         {
             if (null != _currentStaticStoryParents)
@@ -81,6 +93,23 @@ namespace YouDecide.Domain
                 foreach (var staticParent in _currentStaticStoryParents)
                 {
                     _currentStoryParents.Add(new StoryPoint
+                    {
+                        Id = staticParent.Id,
+                        Child = staticParent.Child,
+                        Parent = staticParent.Parent
+                    });
+                }
+            }
+        }
+
+        private void LoadStoryPointsForSinglePlayer(string gameId)
+        {
+            if (null != _currentStaticStoryPoints)
+            {
+                _currentStoryPoints.Clear();
+                foreach (var staticParent in _currentStaticStoryPoints)
+                {
+                    _currentStoryPoints.Add(new StoryPoint
                     {
                         Id = staticParent.Id,
                         Child = staticParent.Child,
@@ -103,6 +132,23 @@ namespace YouDecide.Domain
                             Child = nonStaticParent.Child,
                             Parent = nonStaticParent.Parent
                         });
+                }
+            }
+        }
+
+        private void StoreStoryPointsForSinglePlayer(string gameId)
+        {
+            if (null != _currentStaticStoryPoints)
+            {
+                _currentStaticStoryPoints.Clear();
+                foreach (var nonStaticParent in _currentStoryPoints)
+                {
+                    _currentStaticStoryPoints.Add(new StoryPoint
+                    {
+                        Id = nonStaticParent.Id,
+                        Child = nonStaticParent.Child,
+                        Parent = nonStaticParent.Parent
+                    });
                 }
             }
         }
@@ -136,6 +182,10 @@ namespace YouDecide.Domain
         {
             _storyTree = new List<StoryPoint>();
             _currentStaticStoryParents = new List<StoryPoint>();
+            _currentStaticStoryPoints = new List<StoryPoint>();
+
+            _currentStoryParents.Clear();
+            _currentStoryPoints.Clear();
 
             return PopulateStoryTree();
         }
@@ -145,6 +195,8 @@ namespace YouDecide.Domain
             _currentStoryParents = new List<StoryPoint>();
             _currentStoryPoints = new List<StoryPoint>();
             _currentGameState = new GameState();
+
+            _deathlyDeathText = "";
 
             return PopulateStoryTree();
         }
@@ -196,7 +248,7 @@ namespace YouDecide.Domain
             if (optionNumber > 0 && optionNumber <= _currentStoryPoints.Count)
             {
                 GoForward(optionNumber);
-                //AdjustStoryPointsIfDead();
+                AdjustStoryPointsIfDead();
                 result = UpdateAndReturnCurrentGameState();
             }
             else
@@ -217,11 +269,26 @@ namespace YouDecide.Domain
             return result;
         }
 
+        private void AdjustStoryPointsIfDead()
+        {
+            if (WeAreDead())
+            {
+                _deathlyDeathText = _currentStoryPoints[0].Child;
+                GoBack();
+            }
+        }
+
+        private bool WeAreDead()
+        {
+            return (_currentStoryPoints.Count == 1) && (!_currentStoryPoints[0].Child.Contains("WIN"));
+        }
+
         private GameState UpdateAndReturnCurrentGameState()
         {
             var currentGameState = new GameState
                 {
                     History = GetHistory(),
+                    DeathlyDeathText = _deathlyDeathText,
                     GameOptions = new List<GameOption>()
                 };
 
