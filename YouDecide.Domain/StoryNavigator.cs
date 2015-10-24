@@ -41,7 +41,7 @@ namespace YouDecide.Domain
 
             LoadOptions();
 
-            return GetCurrentGameState();
+            return UpdateAndReturnCurrentGameState();
         }
 
         public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage)
@@ -127,7 +127,7 @@ namespace YouDecide.Domain
 
             GoBack();
 
-            result = GetCurrentGameState();
+            result = UpdateAndReturnCurrentGameState();
 
             return result;
         }
@@ -149,7 +149,7 @@ namespace YouDecide.Domain
             if (optionNumber <= _currentStoryPoints.Count)
             {
                 GoForward(optionNumber);
-                result = GetCurrentGameState();
+                result = UpdateAndReturnCurrentGameState();
             }
             else
             {
@@ -169,7 +169,7 @@ namespace YouDecide.Domain
             return result;
         }
 
-        private GameState GetCurrentGameState(bool firstTimeIn = false)
+        private GameState UpdateAndReturnCurrentGameState()
         {
             var currentGameState = new GameState
                 {
