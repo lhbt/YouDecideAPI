@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Nancy;
+﻿using Nancy;
 using YouDecide.Domain;
 
 namespace YouDecideAPI.Modules
@@ -11,10 +7,7 @@ namespace YouDecideAPI.Modules
     {
         public GameStateModule(IStoryNavigator storyNavigator)
         {
-            Get["/gamestate"] = parameters =>
-                {
-                    return Response.AsJson(storyNavigator.GetCurrentGameState());
-                };
+            Get["/gamestate"] = parameters => Response.AsJson(storyNavigator.GetCurrentGameState());
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using YouDecide.Domain;
+
 using Nancy;
-using YouDecide.Domain;
 
 namespace YouDecideAPI.Modules
 {
@@ -13,17 +10,8 @@ namespace YouDecideAPI.Modules
         {
             Get["/start", true] = async (parameters, ct) =>
             {
-                int count = 0;
-
-                try
-                {
-                    List<StoryPoint> data = (await dataAccessor.FetchAllStoryPoints());
-                    count = data.Count;
-                }
-                catch (Exception ex)
-                {
-                    // Ignore.
-                }
+                var data = (await dataAccessor.FetchAllStoryPoints());
+                var count = data.Count;
 
                 return Response.AsJson(string.Format("initial game state - {0} story points retrieved.", count));
             };

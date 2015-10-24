@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using MongoDB.Bson;
-using MongoDB.Driver;
 using YouDecide.Domain;
+
+using MongoDB.Driver;
 
 namespace YouDecide.Mongo
 {
-    using NUnit.Framework;
-
-    class GameStateDataAccess
+    public class GameStateDataAccess
     {
         protected static IMongoClient Client;
         protected static IMongoDatabase Database;
-        private const string CollectionName = "User_mongo";
+        protected static IMongoCollection<GameState> Collection; 
+
+        private const string CollectionName = "gameStates";
         private const string MongoUrlLocal = "mongodb://localhost:27017/test";
         private const string MongoUrl =
             "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
@@ -26,47 +23,36 @@ namespace YouDecide.Mongo
             var url = new MongoUrl(MongoUrl);
             var client = new MongoClient(url);
             Database = client.GetDatabase(url.DatabaseName);
+            Collection = Database.GetCollection<GameState>(CollectionName);
         }
 
-        public async void NewGame(string userId)
+        public async Task NewGame(int gameId)
         {
-            var document = new BsonDocument
-            {
-                {"_id", userId},
-                {"parent", "test parent"},
-                {"child", "test child"}
-            };
+            var gameState = new GameState
+                {
+                    GameId = 1234,
+                    GameOptions = new List<GameOption>
+                        {
+                            new GameOption
+                                {
+                                    Option = "foo option",
+                                    OptionNumber = 1
+                                },
+                            new GameOption
+                                {
+                                    Option = "bar option",
+                                    OptionNumber = 2
+                                },
+                        },
+                    History = "NOFING M8"
+                };
 
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
-            var collection = Database.GetCollection<dynamic>("Users");
-
-            // insert object
-            await collection.InsertOneAsync(document);
-            //await collection.FindOneAndReplaceAsync(filter, document);
-            //await collection.FindOneAndUpdateAsync(filter, document);
-
-        }
-        public Task<List<BsonDocument>> GetUser(string userId)
-        {
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", userId);
-
-            var collection = Database.GetCollection<BsonDocument>(CollectionName);
-
-            return collection.FindAsync(filter).Result.ToListAsync();
+            await Collection.InsertOneAsync(gameState);
         }
 
-    }
-
-    [TestFixture]
-    class GameStateDataAccessTests
-    {
-        [Test]
-        public void should_do_something()
+        public Task<List<GameState>> GetUser(int gameId)
         {
-            var sut = new GameStateDataAccess();
-            sut.NewGame("123");
-            var result = sut.GetUser("123");
-            Assert.That(true, Is.EqualTo(false));
+            return Collection.Find((state => state.GameId == gameId)).ToListAsync();
         }
 
     }

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using YouDecide.Mongo;
+
 using NUnit.Framework;
-using YouDecide.Domain;
-using YouDecide.Mongo;
-using FluentAssertions;
-using MongoDB.Bson;
 
 namespace YouDecide.Tests
 {
@@ -19,9 +12,18 @@ namespace YouDecide.Tests
         {
             var mongoDataAccess = new MongoDataAccess();
 
-            List<StoryPoint> data = await mongoDataAccess.FetchAllStoryPoints();
+            var data = await mongoDataAccess.FetchAllStoryPoints();
 
-            Assert.AreEqual(230, data.Count);
+            Assert.AreEqual(229, data.Count);
+        }
+
+        [Test]
+        public async void should_do_something()
+        {
+            var sut = new GameStateDataAccess();
+            await sut.NewGame(1234);
+            var result = sut.GetUser(1234).Result;
+            Assert.That(result.Count, Is.GreaterThan(0));
         }
     }
 }
