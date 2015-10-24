@@ -13,8 +13,17 @@ namespace YouDecideAPI.Modules
         {
             Get["/start", true] = async (parameters, ct) =>
             {
-                List<StoryPoint> data = (await dataAccessor.FetchAllStoryPoints());
-                int count = data.Count;
+                int count = 0;
+
+                try
+                {
+                    List<StoryPoint> data = (await dataAccessor.FetchAllStoryPoints());
+                    count = data.Count;
+                }
+                catch (Exception ex)
+                {
+                    // Ignore.
+                }
 
                 return Response.AsJson(string.Format("initial game state - {0} story points retrieved.", count));
             };
