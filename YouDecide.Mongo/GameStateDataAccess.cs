@@ -17,8 +17,9 @@ namespace YouDecide.Mongo
         protected static IMongoClient Client;
         protected static IMongoDatabase Database;
         private const string CollectionName = "User_mongo";
+        private const string MongoUrlLocal = "mongodb://localhost:27017/test";
         private const string MongoUrl =
-            "mongodb://localhost:27017/local";
+            "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
 
         public GameStateDataAccess()
         {
@@ -51,14 +52,9 @@ namespace YouDecide.Mongo
 
             var collection = Database.GetCollection<BsonDocument>(CollectionName);
 
-            return collection.Find(filter);
+            return collection.FindAsync(filter).Result.ToListAsync();
         }
 
-    }
-    public class Thingy
-    {
-        public ObjectId Id { get; set; }
-        public string Name { get; set; }
     }
 
     [TestFixture]
