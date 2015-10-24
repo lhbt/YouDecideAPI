@@ -17,7 +17,7 @@ namespace YouDecide.Mongo
 
         public MongoDataAccess()
         {
-            var url = new MongoUrl(MongoUrlLocal);
+            var url = new MongoUrl(MongoUrl);
             var client = new MongoClient(url);
             Database = client.GetDatabase(url.DatabaseName);
         }
