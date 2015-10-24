@@ -2,5 +2,6 @@
 {
     public interface IStoryNavigator
     {
+        string ProcessSMSInput(string smsMessage);
     }
 }
