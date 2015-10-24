@@ -8,8 +8,9 @@ namespace YouDecide.Domain
 {
     public sealed class StoryNavigator : IStoryNavigator
     {
+        private readonly IDataAccess _dataAccessor;
         private readonly Dictionary<string, ProcessSMSCommand> _smsCommandProcessors;
-        private delegate GameState ProcessSMSCommand(string smsCommand);
+        private delegate Task<GameState> ProcessSMSCommand(string smsCommand);
 
         static List<StoryPoint> _storyTree;
         static List<StoryPoint> _currentStoryParents;
@@ -17,6 +18,7 @@ namespace YouDecide.Domain
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
+            _dataAccessor = dataAccessor;
             _smsCommandProcessors
                 = new Dictionary<string, ProcessSMSCommand>
                     {
@@ -25,9 +27,31 @@ namespace YouDecide.Domain
                     };
         }
 
-        private GameState StartGame(string smsCommand)
+        private async Task<GameState> StartGame(string smsCommand)
         {
-            return new GameState();
+            _storyTree = await Initialise();
+
+            _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
+
+            LoadOptions();
+
+            return GetCurrentGameState();
+        }
+
+        public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage)
+        {
+            GameState response = null;
+
+            if (smsMessage.All(Char.IsDigit))
+            {
+                response = GetNextOptions(int.Parse(smsMessage));
+            }
+            else
+            {
+                response = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+            }
+
+            return response;
         }
 
         public string ProcessSMSInput(string smsMessage)
@@ -53,6 +77,31 @@ namespace YouDecide.Domain
             return response;
         }
 
+        public Task<List<StoryPoint>> Initialise()
+        {
+            _storyTree = new List<StoryPoint>();
+            _currentStoryParents = new List<StoryPoint>();
+            _currentStoryPoints = new List<StoryPoint>();
+
+            return PopulateStoryTree();
+        }
+
+        private Task<List<StoryPoint>> PopulateStoryTree()
+        {
+            return _dataAccessor.FetchAllStoryPoints();
+        }
+
+        private void RepopulateStoryTree()
+        {
+            _storyTree.Clear();
+            _currentStoryParents.Clear();
+            _currentStoryPoints.Clear();
+
+            PopulateStoryTree();
+
+            _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
+        }
+
         public void GoBack()
         {
             if (_currentStoryParents.Count > 1)
@@ -67,7 +116,7 @@ namespace YouDecide.Domain
             }
         }
 
-        public GameState GetPreviousOptions(string smsCommand)
+        public async Task<GameState> GetPreviousOptions(string smsCommand)
         {
             GameState result = null;
 
