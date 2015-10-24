@@ -60,17 +60,19 @@ namespace YouDecide.Domain
 
         public async Task<string> ProcessSMSInput(string smsMessage)
         {
-            string response = "Thank you for your input: " + smsMessage;
+            string response = "";
 
             if (smsMessage.All(Char.IsDigit))
             {
                 _currentGameState = GetNextOptions(int.Parse(smsMessage));
+                response = GetOptionsNicelyFormatted();
             }
             else
             {
                 try
                 {
                     _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                    response = GetOptionsNicelyFormatted();
                 }
                 catch (KeyNotFoundException)
                 {
@@ -94,17 +96,6 @@ namespace YouDecide.Domain
         private Task<List<StoryPoint>> PopulateStoryTree()
         {
             return _dataAccessor.FetchAllStoryPoints();
-        }
-
-        private void RepopulateStoryTree()
-        {
-            _storyTree.Clear();
-            _currentStoryParents.Clear();
-            _currentStoryPoints.Clear();
-
-            PopulateStoryTree();
-
-            _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
         }
 
         public void GoBack()
@@ -203,6 +194,41 @@ namespace YouDecide.Domain
         private void LoadOptions()
         {
             _currentStoryPoints = _storyTree.Where(x => x.Parent == _currentStoryParents[_currentStoryParents.Count - 1].Child).ToList();
+        }
+
+        private string GetOptionsNicelyFormatted()
+        {
+            string options = "No options left.";
+
+            if (_currentStoryPoints.Count > 0)
+            {
+                options = _currentStoryPoints.Count == 1 ? "<br/>" : "Your options are...<br/><br/><br/><br/>";
+                foreach (var storyPoint in _currentStoryPoints)
+                {
+                    string either = "Either... ";
+                    string or = "Or... ";
+
+                    int currentIndex = _currentStoryPoints.IndexOf(storyPoint);
+                    string prefix = "";
+                    if (_currentStoryPoints.Count > 1)
+                    {
+                        if (currentIndex == 0)
+                        {
+                            prefix = string.Format("{0}{1}. ", either, currentIndex + 1);
+                        }
+                        else
+                        {
+                            prefix = string.Format("{0}{1}. ", or, currentIndex + 1);
+                        }
+                    }
+
+                    options = options + string.Format("{0}{1}<br/><br/>",
+                                                      prefix,
+                                                      storyPoint.Child);
+                }
+            }
+
+            return options;
         }
     }
 }
