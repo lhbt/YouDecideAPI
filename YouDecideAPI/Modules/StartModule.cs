@@ -12,8 +12,7 @@ namespace YouDecideAPI.Modules
         {
             Get["/start"] = parameters =>
             {
-                string textSent = Request.Query["text"];
-                return textSent;
+                return "initialised";
             };
         }
     }
