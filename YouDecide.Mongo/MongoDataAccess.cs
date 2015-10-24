@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using MongoDB.Bson.Serialization;
 using YouDecide.Domain;
 using MongoDB.Bson;
-using System;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 
 namespace YouDecide.Mongo
@@ -16,18 +10,20 @@ namespace YouDecide.Mongo
     {
         protected static IMongoClient Client;
         protected static IMongoDatabase Database;
+        private const string CollectionName = "MasterStory_mongo";
 
         public MongoDataAccess()
         {
-            Client = new MongoClient();
-            Database = Client.GetDatabase("test");
+            var url = new MongoUrl("mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m");
+            var client = new MongoClient(url);
+            Database = client.GetDatabase(url.DatabaseName);
         }
 
         public async Task<List<StoryPoint>> FetchAllStoryPoints()
         {
             var retrievedData = new List<StoryPoint>();
 
-            var collection = Database.GetCollection<BsonDocument>("youdecide");
+            var collection = Database.GetCollection<BsonDocument>(CollectionName);
             var filter = new BsonDocument();
 
             using (var cursor = await collection.FindAsync(filter))
@@ -47,7 +43,7 @@ namespace YouDecide.Mongo
 
         public async Task<List<BsonDocument>> TestFilterData()
         {
-            var collection = Database.GetCollection<BsonDocument>("youdecide");
+            var collection = Database.GetCollection<BsonDocument>(CollectionName);
             var filter = Builders<BsonDocument>.Filter.Eq("child", "You turn left.");
             List<BsonDocument> result = await collection.Find(filter).ToListAsync();
 
@@ -63,7 +59,7 @@ namespace YouDecide.Mongo
                 {"child", "test child"}
             };
 
-            var collection = Database.GetCollection<BsonDocument>("youdecide");
+            var collection = Database.GetCollection<BsonDocument>(CollectionName);
             await collection.InsertOneAsync(document);
         }
     }

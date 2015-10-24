@@ -21,7 +21,7 @@ namespace YouDecide.Tests
 
             List<StoryPoint> data = await mongoDataAccess.FetchAllStoryPoints();
 
-            Assert.AreEqual(data.Count, 230);
+            Assert.AreEqual(230, data.Count);
         }
     }
 }
