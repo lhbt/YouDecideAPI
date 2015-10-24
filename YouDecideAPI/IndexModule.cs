@@ -1,25 +1,24 @@
 ﻿namespace YouDecideAPI
 {
     using Nancy;
-
+    using Nancy.ModelBinding;
     public class IndexModule : NancyModule
     {
-        private static string nastyGlobal;
+        private static SmsMessage nastyGlobal;
         public IndexModule()
         {
             Get["/"] = parameters =>
             {
                 return View["index"];
             };
-            Get["/status"] = parameter =>
+            Get["/status"] = parameters =>
             {
-                return nastyGlobal;
+                return nastyGlobal.FullMessage();
             };
-            Get["/inputtext/"] = parameter =>
+            Get["/inputtext/"] = parameters =>
             {
-                var text = this.Request.Query;
-                nastyGlobal = text.id + " " + text.to + " " + text.from + " " + text.keyword + " " + text.content;
-                return "ok";
+                nastyGlobal = this.Bind<SmsMessage>();
+                return "ok: " + nastyGlobal.FullMessage();
             };
         }
     }

@@ -73,6 +73,7 @@
     <Compile Include="Modules\InputModule.cs" />
     <Compile Include="Modules\StartModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SmsMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\index.sshtml">
