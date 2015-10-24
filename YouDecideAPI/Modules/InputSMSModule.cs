@@ -11,7 +11,7 @@ namespace YouDecideAPI.Modules
     {
         public InputSMSModule(IStoryNavigator storyNavigator)
         {
-            Get["/input"] = parameters =>
+            Get["/inputsms"] = parameters =>
             {
                 string smsMessage = Request.Query["content"];
 

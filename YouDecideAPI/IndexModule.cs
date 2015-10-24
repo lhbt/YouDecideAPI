@@ -55,18 +55,18 @@
                 };
 
 
-            Get["/inputsms/"] = parameters =>
-                {
-                    var smsMessage = this.Bind<SmsMessage>();
-                    lastMessage = smsMessage;
-                    var response = "Key already exists";
-                    if (!nastyGlobal.ContainsKey(smsMessage.Id))
-                    {
-                        nastyGlobal.Add(smsMessage.Id, smsMessage);
-                        response = smsMessage.FullMessage();
-                    }
-                    return response;
-                };
+            //Get["/inputsms/"] = parameters =>
+            //    {
+            //        var smsMessage = this.Bind<SmsMessage>();
+            //        lastMessage = smsMessage;
+            //        var response = "Key already exists";
+            //        if (!nastyGlobal.ContainsKey(smsMessage.Id))
+            //        {
+            //            nastyGlobal.Add(smsMessage.Id, smsMessage);
+            //            response = smsMessage.FullMessage();
+            //        }
+            //        return response;
+            //    };
             
         }
     }
