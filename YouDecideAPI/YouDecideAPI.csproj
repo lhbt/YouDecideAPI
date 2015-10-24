@@ -70,7 +70,8 @@
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="IndexModule.cs" />
-    <Compile Include="Modules\InputModule.cs" />
+    <Compile Include="Modules\GameStateModule.cs" />
+    <Compile Include="Modules\InputSMSModule.cs" />
     <Compile Include="Modules\StartModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmsMessage.cs" />
