@@ -11,10 +11,12 @@ namespace YouDecide.Mongo
         protected static IMongoClient Client;
         protected static IMongoDatabase Database;
         private const string CollectionName = "MasterStory_mongo";
+        private const string MongoUrl =
+            "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
 
         public MongoDataAccess()
         {
-            var url = new MongoUrl("mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m");
+            var url = new MongoUrl(MongoUrl);
             var client = new MongoClient(url);
             Database = client.GetDatabase(url.DatabaseName);
         }
