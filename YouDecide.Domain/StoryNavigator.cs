@@ -13,9 +13,11 @@ namespace YouDecide.Domain
         private delegate Task<GameState> ProcessSMSCommand(string smsCommand);
 
         static List<StoryPoint> _storyTree;
-        static List<StoryPoint> _currentStoryParents;
-        static List<StoryPoint> _currentStoryPoints;
-        private static GameState _currentGameState;
+        static List<StoryPoint> _currentStaticStoryParents;
+
+        List<StoryPoint> _currentStoryPoints;
+        private GameState _currentGameState;
+        List<StoryPoint> _currentStoryParents;
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
@@ -35,7 +37,7 @@ namespace YouDecide.Domain
 
         private async Task<GameState> StartGame(string smsCommand)
         {
-            _storyTree = await Initialise();
+            _storyTree = await GameInitialise();
 
             _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
 
@@ -44,8 +46,11 @@ namespace YouDecide.Domain
             return UpdateAndReturnCurrentGameState();
         }
 
-        public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage)
+        public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage, string gameId)
         {
+            await TurnInitialise();
+            LoadStoryParentsForSinglePlayer(gameId);
+
             if (smsMessage.All(Char.IsDigit))
             {
                 _currentGameState = GetNextOptions(int.Parse(smsMessage));
@@ -55,10 +60,54 @@ namespace YouDecide.Domain
                 _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
             }
 
+            StoreStoryParentsForSinglePlayer(gameId);
+
             return _currentGameState;
         }
 
-        public async Task<string> ProcessSMSInput(string smsMessage)
+        private void LoadStoryParentsForMultiPlayer(string gameId)
+        {
+        }
+
+        private void StoreStoryParentsForMultiPlayer(string gameId)
+        {
+        }
+
+        private void LoadStoryParentsForSinglePlayer(string gameId)
+        {
+            if (null != _currentStaticStoryParents)
+            {
+                _currentStoryParents.Clear();
+                foreach (var staticParent in _currentStaticStoryParents)
+                {
+                    _currentStoryParents.Add(new StoryPoint
+                    {
+                        Id = staticParent.Id,
+                        Child = staticParent.Child,
+                        Parent = staticParent.Parent
+                    });
+                }
+            }
+        }
+
+        private void StoreStoryParentsForSinglePlayer(string gameId)
+        {
+            if (null != _currentStaticStoryParents)
+            {
+                _currentStaticStoryParents.Clear();
+                foreach (var nonStaticParent in _currentStoryParents)
+                {
+                    _currentStaticStoryParents.Add(new StoryPoint
+                        {
+                            Id = nonStaticParent.Id,
+                            Child = nonStaticParent.Child,
+                            Parent = nonStaticParent.Parent
+                        });
+                }
+            }
+        }
+
+        public async Task<string> ProcessSMSInput(string smsMessage, string gameId)
         {
             string response = "";
 
@@ -83,9 +132,16 @@ namespace YouDecide.Domain
             return response;
         }
 
-        public Task<List<StoryPoint>> Initialise()
+        public Task<List<StoryPoint>> GameInitialise()
         {
             _storyTree = new List<StoryPoint>();
+            _currentStaticStoryParents = new List<StoryPoint>();
+
+            return PopulateStoryTree();
+        }
+
+        public Task<List<StoryPoint>> TurnInitialise()
+        {
             _currentStoryParents = new List<StoryPoint>();
             _currentStoryPoints = new List<StoryPoint>();
             _currentGameState = new GameState();
@@ -140,6 +196,7 @@ namespace YouDecide.Domain
             if (optionNumber > 0 && optionNumber <= _currentStoryPoints.Count)
             {
                 GoForward(optionNumber);
+                //AdjustStoryPointsIfDead();
                 result = UpdateAndReturnCurrentGameState();
             }
             else

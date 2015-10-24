@@ -12,11 +12,11 @@ namespace YouDecideAPI.Modules
             {
                 string smsMessage = Request.Query["content"];
 
-                GameState currentState = await storyNavigator.ProcessSMSInputReturningGameState(smsMessage);
+                GameState currentState = await storyNavigator.ProcessSMSInputReturningGameState(smsMessage, "0");
 
                 return JsonConvert.SerializeObject(currentState);
 
-                //string nicelyFormattedOptions = await storyNavigator.ProcessSMSInput(smsMessage);
+                //string nicelyFormattedOptions = await storyNavigator.ProcessSMSInput(smsMessage, "0");
 
                 //return nicelyFormattedOptions;
             };
