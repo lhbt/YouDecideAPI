@@ -8,5 +8,6 @@ namespace YouDecide.Domain
 {
     public interface IDataAccess
     {
+        Task<List<StoryPoint>> FetchAllStoryPoints();
     }
 }

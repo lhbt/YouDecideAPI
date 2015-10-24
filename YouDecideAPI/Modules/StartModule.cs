@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Nancy;
+using YouDecide.Domain;
 
 namespace YouDecideAPI.Modules
 {
     public class StartModule : NancyModule
     {
-        public StartModule()
+        public StartModule(IDataAccess dataAccessor)
         {
-            Get["/start"] = parameters =>
+            Get["/start", true] = async (parameters, ct) =>
             {
-                return Response.AsJson("initial game state");
+                List<StoryPoint> data = (await dataAccessor.FetchAllStoryPoints());
+                int count = data.Count;
+
+                return Response.AsJson(string.Format("initial game state - {0} story points retrieved.", count));
             };
         }
     }
