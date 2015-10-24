@@ -173,6 +173,7 @@ namespace YouDecide.Domain
         {
             var currentGameState = new GameState
                 {
+                    History = GetHistory(),
                     GameOptions = new List<GameOption>()
                 };
 
@@ -188,6 +189,15 @@ namespace YouDecide.Domain
             }
 
             return currentGameState;
+        }
+
+        private string GetHistory()
+        {
+            string history =
+                _currentStoryParents.Select(x => x.Parent == "nothing" ? "" : x.Child)
+                                    .Aggregate((current, next) => string.Format("{0} {1}", current, next));
+
+            return history;
         }
 
         private void LoadOptions()

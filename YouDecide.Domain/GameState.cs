@@ -8,6 +8,7 @@ namespace YouDecide.Domain
 {
     public sealed class GameState
     {
+        public string History { get; set; }
         public List<GameOption> GameOptions { get; set; }
     }
 }

@@ -26,11 +26,8 @@ namespace YouDecide.Mongo
         {
             var retrievedData = new List<StoryPoint>();
 
-            //IMongoCollection<StoryPoint> collection = Database.GetCollection<StoryPoint>(CollectionName);
-
-            IMongoCollection<BsonDocument> collection = Database.GetCollection<BsonDocument>(CollectionName);
+            var collection = Database.GetCollection<BsonDocument>(CollectionName);
             var filter = new BsonDocument();
-            IFindFluent<BsonDocument, BsonDocument> cursor2 = collection.Find(filter);
 
             using (var cursor = await collection.FindAsync(filter))
             {
