@@ -88,6 +88,16 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YouDecide.Domain\YouDecide.Domain.csproj">
+      <Project>{893ebeb3-982f-4924-8648-371a974f34d1}</Project>
+      <Name>YouDecide.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YouDecide.Mongo\YouDecide.Mongo.csproj">
+      <Project>{557db2d6-ffab-42b2-b813-e37bb2ff76a1}</Project>
+      <Name>YouDecide.Mongo</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

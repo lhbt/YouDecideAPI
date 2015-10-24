@@ -1,6 +1,6 @@
 ﻿using Nancy.TinyIoc;
-//using YouDecide.Domain;
-//using YouDecide.Mongo;
+using YouDecide.Domain;
+using YouDecide.Mongo;
 
 namespace YouDecideAPI
 {
@@ -13,8 +13,8 @@ namespace YouDecideAPI
         // For more information https://github.com/NancyFx/Nancy/wiki/Bootstrapper
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
-            //container.Register<IStoryNavigator, StoryNavigator>().AsMultiInstance();
-            //container.Register<IDataAccess, MongoDataAccess>().AsMultiInstance();
+            container.Register<IStoryNavigator, StoryNavigator>().AsMultiInstance();
+            container.Register<IDataAccess, MongoDataAccess>().AsMultiInstance();
         }
     }
 }
