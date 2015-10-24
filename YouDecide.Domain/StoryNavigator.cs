@@ -15,6 +15,7 @@ namespace YouDecide.Domain
         static List<StoryPoint> _storyTree;
         static List<StoryPoint> _currentStoryParents;
         static List<StoryPoint> _currentStoryPoints;
+        private static GameState _currentGameState;
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
@@ -25,6 +26,11 @@ namespace YouDecide.Domain
                         {"START", StartGame},
                         {"BACK", GetPreviousOptions}
                     };
+        }
+
+        public GameState GetCurrentGameState()
+        {
+            return _currentGameState;
         }
 
         private async Task<GameState> StartGame(string smsCommand)
@@ -40,33 +46,31 @@ namespace YouDecide.Domain
 
         public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage)
         {
-            GameState response = null;
-
             if (smsMessage.All(Char.IsDigit))
             {
-                response = GetNextOptions(int.Parse(smsMessage));
+                _currentGameState = GetNextOptions(int.Parse(smsMessage));
             }
             else
             {
-                response = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
             }
 
-            return response;
+            return _currentGameState;
         }
 
-        public string ProcessSMSInput(string smsMessage)
+        public async Task<string> ProcessSMSInput(string smsMessage)
         {
             string response = "Thank you for your input: " + smsMessage;
 
             if (smsMessage.All(Char.IsDigit))
             {
-                GetNextOptions(int.Parse(smsMessage));
+                _currentGameState = GetNextOptions(int.Parse(smsMessage));
             }
             else
             {
                 try
                 {
-                    _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                    _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -82,6 +86,7 @@ namespace YouDecide.Domain
             _storyTree = new List<StoryPoint>();
             _currentStoryParents = new List<StoryPoint>();
             _currentStoryPoints = new List<StoryPoint>();
+            _currentGameState = new GameState();
 
             return PopulateStoryTree();
         }

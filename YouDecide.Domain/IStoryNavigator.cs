@@ -4,7 +4,8 @@ namespace YouDecide.Domain
 {
     public interface IStoryNavigator
     {
-        string ProcessSMSInput(string smsMessage);
+        Task<string> ProcessSMSInput(string smsMessage);
         Task<GameState> ProcessSMSInputReturningGameState(string smsMessage);
+        GameState GetCurrentGameState();
     }
 }
