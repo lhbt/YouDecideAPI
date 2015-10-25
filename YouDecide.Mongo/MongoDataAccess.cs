@@ -15,7 +15,7 @@ namespace YouDecide.Mongo
         private const string StoryCollectionName = "MasterStory_mongo";
         private const string GameCollectionName = "gameStates";
 
-        //private const string MongoUrl = "mongodb://localhost:27017/test";
+        private const string LocalMongoUrl = "mongodb://localhost:27017/test";
         private const string MongoUrl = "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
 
         public MongoDataAccess()
