@@ -52,8 +52,8 @@ namespace YouDecide.Domain
         public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage, string gameId)
         {
             await TurnInitialise();
-            LoadStoryParentsForSinglePlayer(gameId);
-            LoadStoryPointsForSinglePlayer(gameId);
+            LoadStoryParentsForMultiPlayer(gameId);
+            LoadStoryPointsForMultiPlayer(gameId);
 
             if (smsMessage.All(Char.IsDigit))
             {
@@ -64,26 +64,30 @@ namespace YouDecide.Domain
                 _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
             }
 
-            StoreStoryParentsForSinglePlayer(gameId);
-            StoreStoryPointsForSinglePlayer(gameId);
+            StoreStoryParentsForMultiPlayer(gameId);
+            StoreStoryPointsForMultiPlayer(gameId);
 
             return _currentGameState;
         }
 
         private void LoadStoryParentsForMultiPlayer(string gameId)
         {
+            _currentStaticStoryParents = _dataAccessor.GetGameStoryParents(gameId).Result;
         }
 
         private void StoreStoryParentsForMultiPlayer(string gameId)
         {
+            _dataAccessor.UpdateGameParents(_currentStoryParents, gameId);
         }
 
         private void LoadStoryPointsForMultiPlayer(string gameId)
         {
+            _currentStaticStoryPoints = _dataAccessor.GetGameStoryPoints(gameId).Result;
         }
 
         private void StoreStoryPointsForMultiPlayer(string gameId)
         {
+            _dataAccessor.UpdateGamePoints(_currentStoryPoints, gameId);
         }
 
         private void LoadStoryParentsForSinglePlayer(string gameId)
