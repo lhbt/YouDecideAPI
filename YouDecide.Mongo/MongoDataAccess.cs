@@ -16,8 +16,8 @@ namespace YouDecide.Mongo
         private const string StoryCollectionName = "MasterStory_mongo";
         private const string GameCollectionName = "gameStates";
 
-        //private const string MongoUrl = "mongodb://localhost:27017/test";
-        private const string MongoUrl = "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
+        private const string MongoUrl = "mongodb://localhost:27017/test";
+        //private const string MongoUrl = "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
 
         public MongoDataAccess()
         {
@@ -71,17 +71,6 @@ namespace YouDecide.Mongo
             await Database.GetCollection<GameState>(GameCollectionName).ReplaceOneAsync(x => x.GameId == gameId, gameState);
         }
 
-        public GameState GetCurrentGameState(string gameId)
-        {
-            var gameState =
-                Database.GetCollection<GameState>(GameCollectionName)
-                        .Find((state => state.GameId == gameId))
-                        .ToListAsync()
-                        .Result.First();
-
-            return gameState;
-        }
-
         public List<StoryPoint> GetGameStoryPoints(string gameId)
         {
             var gameState = GetCurrentGameState(gameId);
@@ -92,6 +81,15 @@ namespace YouDecide.Mongo
         {
             var gameState = GetCurrentGameState(gameId);
             return gameState.Parents;
+        }
+
+        public GameState GetCurrentGameState(string gameId)
+        {
+            var gameState =
+                Database.GetCollection<GameState>(GameCollectionName)
+                        .Find((state => state.GameId == gameId)).FirstOrDefaultAsync().Result;
+
+            return gameState ?? new GameState { GameId = gameId };
         }
 
         public async Task<List<BsonDocument>> TestFilterData()

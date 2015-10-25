@@ -6,6 +6,6 @@ namespace YouDecide.Domain
     {
         Task<string> ProcessSMSInput(string smsMessage, string gameId);
         Task<GameState> ProcessSMSInputReturningGameState(string smsMessage, string gameId);
-        GameState GetCurrentGameState();
+        GameState GetCurrentGameState(string gameId);
     }
 }

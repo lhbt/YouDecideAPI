@@ -13,5 +13,6 @@ namespace YouDecide.Domain
         Task UpdateGamePoints(List<StoryPoint> parents, string gameId);
         List<StoryPoint> GetGameStoryPoints(string gameId);
         List<StoryPoint> GetGameStoryParents(string gameId);
+        GameState GetCurrentGameState(string gameId);
     }
 }
