@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Clockwork;
+
 namespace YouDecide.Domain
 {
+
     public class StoryNavigator : IStoryNavigator
     {
         private readonly IDataAccess _dataAccessor;
@@ -48,6 +51,18 @@ namespace YouDecide.Domain
             UpdateAndReturnCurrentGameState();
 
             _dataAccessor.CreateGameState(_currentGameState);
+
+            SendUserSMS();
+        }
+
+        private void SendUserSMS()
+        {
+            var api = new API("6f7e73dd28bf6022c1a988a884c880f283830ece");
+            api.Send(new SMS
+            {
+                To = _gameID, 
+                Message = string.Format("Your game is available at \"http://52.18.191.88/#{0}\", Have Fun!", this._gameID) 
+            });
         }
 
         public GameState ProcessSMSInputReturningGameState(string smsMessage, string gameId)
