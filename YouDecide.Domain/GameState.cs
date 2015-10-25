@@ -14,5 +14,9 @@ namespace YouDecide.Domain
         public List<GameOption> GameOptions { get; set; }
 
         public int GameId { get; set; }
+
+        public List<StoryPoint> Points { get; set; }
+
+        public List<StoryPoint> Parents { get; set; }
     }
 }
