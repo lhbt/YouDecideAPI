@@ -11,5 +11,6 @@ namespace YouDecide.Domain
         public int Id { get; set; }
         public string Parent { get; set; }
         public string Child { get; set; }
+        public string Gif { get; set; }
     }
 }
