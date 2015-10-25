@@ -11,7 +11,7 @@ namespace YouDecide.Domain
     {
         private readonly IDataAccess _dataAccessor;
         private readonly Dictionary<string, ProcessSMSCommand> _smsCommandProcessors;
-        private delegate void ProcessSMSCommand(string smsCommand);
+        private delegate void ProcessSMSCommand();
 
         static List<StoryPoint> _storyTree;
 
@@ -39,7 +39,7 @@ namespace YouDecide.Domain
             return _dataAccessor.GetCurrentGameState(gameId);
         }
 
-        private void StartGame(string smsCommand)
+        private void StartGame()
         {
             _dataAccessor.DeleteGameState(_gameId);
 
@@ -78,7 +78,17 @@ namespace YouDecide.Domain
             }
             else
             {
-                _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                try
+                {
+                    _smsCommandProcessors[smsMessage.ToUpper()]();
+                }
+                catch (KeyNotFoundException ex)
+                {
+                    //GetPreviousOptions();
+                    string errorMessage = string.Format("Oh come on, {0}?? That's just plain wrong.", smsMessage);
+                    _currentGameState.Gif = "you-are-dumb.gif";
+                    _currentGameState.DeathlyDeathText = errorMessage;
+                }
             }
 
             StoreGameState(_currentGameState, gameId);
@@ -110,7 +120,7 @@ namespace YouDecide.Domain
             {
                 try
                 {
-                    _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                    _smsCommandProcessors[smsMessage.ToUpper()]();
                     response = GetOptionsNicelyFormatted();
                 }
                 catch (KeyNotFoundException)
@@ -163,7 +173,7 @@ namespace YouDecide.Domain
             LoadOptions();
         }
 
-        public void GetPreviousOptions(string smsCommand)
+        public void GetPreviousOptions()
         {
             GoBack();
 
