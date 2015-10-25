@@ -8,9 +8,19 @@ namespace YouDecideAPI.Modules
     {
         public GameStateModule(IStoryNavigator storyNavigator)
         {
-            var gameState = storyNavigator.GetCurrentGameState("0");
+            
 
-            Get["/gamestate"] = parameters => JsonConvert.SerializeObject(gameState);
+            Get["/gamestate"] = parameters =>
+                {
+                    var gameState = storyNavigator.GetCurrentGameState("0");
+                    return JsonConvert.SerializeObject(gameState);
+                };
+
+            Get["/mpgamestate/{id}"] = parameters =>
+                {
+                    var gameState = storyNavigator.GetCurrentGameState(parameters.id);
+                    return JsonConvert.SerializeObject(gameState);
+                };
         }
     }
 }
