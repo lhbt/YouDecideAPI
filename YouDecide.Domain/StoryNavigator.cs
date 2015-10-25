@@ -72,7 +72,7 @@ namespace YouDecide.Domain
 
         private void LoadStoryParentsForMultiPlayer(string gameId)
         {
-            _currentStaticStoryParents = _dataAccessor.GetGameStoryParents(gameId).Result;
+            _currentStaticStoryParents = _dataAccessor.GetGameStoryParents(gameId);
         }
 
         private void StoreStoryParentsForMultiPlayer(string gameId)
@@ -82,7 +82,7 @@ namespace YouDecide.Domain
 
         private void LoadStoryPointsForMultiPlayer(string gameId)
         {
-            _currentStaticStoryPoints = _dataAccessor.GetGameStoryPoints(gameId).Result;
+            _currentStaticStoryPoints = _dataAccessor.GetGameStoryPoints(gameId);
         }
 
         private void StoreStoryPointsForMultiPlayer(string gameId)
@@ -195,16 +195,23 @@ namespace YouDecide.Domain
             return PopulateStoryTree();
         }
 
-        public Task<List<StoryPoint>> TurnInitialise()
+        public async Task<List<StoryPoint>> TurnInitialise()
         {
             _currentStoryParents = new List<StoryPoint>();
             _currentStoryPoints = new List<StoryPoint>();
-            _currentGameState = new GameState();
+            _currentGameState = new GameState
+                {
+                    GameId = "0"
+                };
+
+            await _dataAccessor.UpdateGameState(_currentGameState);
 
             _deathlyDeathText = "";
             _historySuffix = "";
 
-            return PopulateStoryTree();
+            var result = await PopulateStoryTree();
+
+            return result;
         }
 
         private Task<List<StoryPoint>> PopulateStoryTree()

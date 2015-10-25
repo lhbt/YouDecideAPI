@@ -26,9 +26,10 @@ namespace YouDecide.Tests
         public async void should_do_something()
         {
             var sut = new MongoDataAccess();
-            await sut.UpdateGameState("1234");
-            var result = sut.GetGameState("1234").Result;
-            Assert.That(result.Count, Is.GreaterThan(0));
+            var gameId = "1234";
+            await sut.UpdateGameState(new GameState { GameId = gameId });
+            var result = sut.GetCurrentGameState(gameId);
+            Assert.That(result.GameId, Is.EqualTo(gameId));
         }
 
         [Test]
@@ -37,10 +38,10 @@ namespace YouDecide.Tests
             var sut = new MongoDataAccess();
             var storyPoint = new StoryPoint() { Child = "test child", Id = 1234, Parent = "parent test" };
             var storyPoints = new List<StoryPoint>() { storyPoint };
-            await sut.UpdateGameState("gameIdTest");
+            await sut.UpdateGameState(new GameState { GameId = "gameIdTest" });
             await sut.UpdateGameParents(storyPoints, "gameIdTest");
 
-            var result = await sut.GetGameStoryParents("gameIdTest");
+            var result = sut.GetGameStoryParents("gameIdTest");
 
             Assert.That(result.First().Parent, Is.EqualTo(storyPoint.Parent));
             Assert.That(result.First().Child, Is.EqualTo(storyPoint.Child));
