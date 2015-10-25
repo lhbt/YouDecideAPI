@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+using MongoDB.Driver.Builders;
 using YouDecide.Domain;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace YouDecide.Mongo
@@ -10,8 +9,8 @@ namespace YouDecide.Mongo
 
     public class MongoDataAccess : IDataAccess
     {
-        protected static IMongoClient Client;
-        protected static IMongoDatabase Database;
+        protected static MongoClient Client;
+        protected static MongoDatabase Database;
 
         private const string StoryCollectionName = "MasterStory_mongo";
         private const string GameCollectionName = "gameStates";
@@ -23,52 +22,27 @@ namespace YouDecide.Mongo
         {
             var url = new MongoUrl(MongoUrl);
             var client = new MongoClient(url);
-            Database = client.GetDatabase(url.DatabaseName);
+            Database = client.GetServer().GetDatabase(url.DatabaseName);
         }
 
-        public async Task<List<StoryPoint>> FetchAllStoryPoints()
+        public List<StoryPoint> FetchAllStoryPoints()
         {
-            var retrievedData = new List<StoryPoint>();
+            var collection = Database.GetCollection<StoryPoint>(StoryCollectionName);
 
-            var collection = Database.GetCollection<BsonDocument>(StoryCollectionName);
-            var filter = new BsonDocument();
+            var stories = collection.FindAll();
 
-            using (var cursor = await collection.FindAsync(filter))
-            {
-                while (await cursor.MoveNextAsync())
-                {
-                    var batch = cursor.Current;
-                    foreach (BsonDocument document in batch)
-                    {
-                        retrievedData.Add(document.ConvertToStoryPoint());
-                    }
-                }
-            }
-
-            return retrievedData;
+            return stories.ToList();
         }
 
-        public async Task UpdateGameState(GameState gameState)
+        public void CreateGameState(GameState gameState)
         {
-            await Database.GetCollection<GameState>(GameCollectionName).InsertOneAsync(gameState);
+            Database.GetCollection<GameState>(GameCollectionName).Insert(gameState);
         }
 
-        public async Task UpdateGameParents(List<StoryPoint> parents, string gameId)
+        public void UpdateGameState(GameState gameState)
         {
-            var gameState = GetCurrentGameState(gameId);
-
-            gameState.Parents = parents;
-            
-            await Database.GetCollection<GameState>(GameCollectionName).ReplaceOneAsync(x => x.GameId == gameId, gameState);
-        }
-
-        public async Task UpdateGamePoints(List<StoryPoint> points, string gameId)
-        {
-            var gameState = GetCurrentGameState(gameId);
-
-            gameState.Points = points;
-
-            await Database.GetCollection<GameState>(GameCollectionName).ReplaceOneAsync(x => x.GameId == gameId, gameState);
+            var query = Query<GameState>.EQ(x => x.GameId, gameState.GameId);
+            Database.GetCollection<GameState>(GameCollectionName).Update(query, Update.Replace(gameState));
         }
 
         public List<StoryPoint> GetGameStoryPoints(string gameId)
@@ -85,33 +59,9 @@ namespace YouDecide.Mongo
 
         public GameState GetCurrentGameState(string gameId)
         {
-            var gameState =
-                Database.GetCollection<GameState>(GameCollectionName)
-                        .Find((state => state.GameId == gameId)).FirstOrDefaultAsync().Result;
-
+            var query = Query<GameState>.EQ(x => x.GameId, gameId);
+            var gameState = Database.GetCollection<GameState>(GameCollectionName).Find(query).FirstOrDefault();
             return gameState ?? new GameState { GameId = gameId, DeathlyDeathText = "", History = "" };
-        }
-
-        public async Task<List<BsonDocument>> TestFilterData()
-        {
-            var collection = Database.GetCollection<BsonDocument>(StoryCollectionName);
-            var filter = Builders<BsonDocument>.Filter.Eq("child", "You turn left.");
-            List<BsonDocument> result = await collection.Find(filter).ToListAsync();
-
-            return result;
-        }
-
-        public async void InsertTestData()
-        {
-            var document = new BsonDocument
-            {
-                {"_id", "99999"},
-                {"parent", "test parent"},
-                {"child", "test child"}
-            };
-
-            var collection = Database.GetCollection<BsonDocument>(StoryCollectionName);
-            await collection.InsertOneAsync(document);
         }
     }
 }

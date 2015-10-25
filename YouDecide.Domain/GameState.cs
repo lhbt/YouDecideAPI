@@ -8,12 +8,14 @@ namespace YouDecide.Domain
     {
         [JsonIgnore]
         public ObjectId Id { get; set; }
+
         public string History { get; set; }
      
         public string DeathlyDeathText { get; set; }
-        public List<GameOption> GameOptions { get; set; }
 
         public string GameId { get; set; }
+
+        public List<GameOption> GameOptions { get; set; }
 
         public List<StoryPoint> Points { get; set; }
 

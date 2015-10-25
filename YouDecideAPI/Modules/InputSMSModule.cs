@@ -8,11 +8,11 @@ namespace YouDecideAPI.Modules
     {
         public InputSMSModule(IStoryNavigator storyNavigator)
         {
-            Get["/inputsms", true] = async (parameters, ct) =>
+            Get["/inputsms"] = (parameters) =>
             {
                 string smsMessage = Request.Query["content"];
 
-                GameState currentState = await storyNavigator.ProcessSMSInputReturningGameState(smsMessage, "0");
+                var currentState = storyNavigator.ProcessSMSInputReturningGameState(smsMessage, "0");
 
                 return JsonConvert.SerializeObject(currentState);
 

@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace YouDecide.Domain
 {
-    public sealed class StoryNavigator : IStoryNavigator
+    public class StoryNavigator : IStoryNavigator
     {
         private readonly IDataAccess _dataAccessor;
         private readonly Dictionary<string, ProcessSMSCommand> _smsCommandProcessors;
-        private delegate Task<GameState> ProcessSMSCommand(string smsCommand);
+        private delegate void ProcessSMSCommand(string smsCommand);
 
         static List<StoryPoint> _storyTree;
 
@@ -36,18 +34,20 @@ namespace YouDecide.Domain
             return _dataAccessor.GetCurrentGameState(gameId);
         }
 
-        private async Task<GameState> StartGame(string smsCommand)
+        private void StartGame(string smsCommand)
         {
-            await GameInitialise("0");
+            GameInitialise("0");
 
             _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
 
             LoadOptions();
 
-            return UpdateAndReturnCurrentGameState();
+            UpdateAndReturnCurrentGameState();
+
+            _dataAccessor.CreateGameState(_currentGameState);
         }
 
-        public async Task<GameState> ProcessSMSInputReturningGameState(string smsMessage, string gameId)
+        public GameState ProcessSMSInputReturningGameState(string smsMessage, string gameId)
         {
             LoadStoryParentsForMultiPlayer(gameId);
             LoadStoryPointsForMultiPlayer(gameId);
@@ -55,17 +55,22 @@ namespace YouDecide.Domain
             if (smsMessage.All(Char.IsDigit))
             {
                 TurnInitialise(gameId);
-                _currentGameState = GetNextOptions(int.Parse(smsMessage));
+                GetNextOptions(int.Parse(smsMessage));
             }
             else
             {
-                _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
             }
 
-            StoreStoryParentsForMultiPlayer(gameId);
-            StoreStoryPointsForMultiPlayer(gameId);
+            StoreGameState(_currentGameState, gameId);
 
             return _currentGameState;
+        }
+
+        private void StoreGameState(GameState gameState, string gameId)
+        {
+            gameState.GameId = gameId;
+            _dataAccessor.UpdateGameState(gameState);
         }
 
         private void LoadStoryParentsForMultiPlayer(string gameId)
@@ -73,35 +78,25 @@ namespace YouDecide.Domain
             _currentStoryParents = _dataAccessor.GetGameStoryParents(gameId);
         }
 
-        private async void StoreStoryParentsForMultiPlayer(string gameId)
-        {
-            await _dataAccessor.UpdateGameParents(_currentStoryParents, gameId);
-        }
-
         private void LoadStoryPointsForMultiPlayer(string gameId)
         {
             _currentStoryPoints = _dataAccessor.GetGameStoryPoints(gameId);
         }
 
-        private async void StoreStoryPointsForMultiPlayer(string gameId)
+        public string ProcessSMSInput(string smsMessage, string gameId)
         {
-            await _dataAccessor.UpdateGamePoints(_currentStoryPoints, gameId);
-        }
-
-        public async Task<string> ProcessSMSInput(string smsMessage, string gameId)
-        {
-            string response = "";
+            string response;
 
             if (smsMessage.All(Char.IsDigit))
             {
-                _currentGameState = GetNextOptions(int.Parse(smsMessage));
+                GetNextOptions(int.Parse(smsMessage));
                 response = GetOptionsNicelyFormatted();
             }
             else
             {
                 try
                 {
-                    _currentGameState = await _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
+                    _smsCommandProcessors[smsMessage.ToUpper()](smsMessage);
                     response = GetOptionsNicelyFormatted();
                 }
                 catch (KeyNotFoundException)
@@ -113,19 +108,23 @@ namespace YouDecide.Domain
             return response;
         }
 
-        public async Task GameInitialise(string gameId)
+        public void GameInitialise(string gameId)
         {
             _storyTree = new List<StoryPoint>();
+
             _currentStoryParents = new List<StoryPoint>();
             _currentStoryPoints = new List<StoryPoint>();
+
             _currentGameState = new GameState
                 {
-                    GameId = gameId
+                    GameId = gameId,
+                    DeathlyDeathText = "",
+                    History = "",
+                    Parents = new List<StoryPoint>(),
+                    Points = new List<StoryPoint>()
                 };
 
-            await _dataAccessor.UpdateGameState(_currentGameState);
-
-            _storyTree = await PopulateStoryTree();
+            _storyTree = PopulateStoryTree();
         }
 
         public void TurnInitialise(string gameId)
@@ -134,7 +133,7 @@ namespace YouDecide.Domain
             _historySuffix = "";
         }
 
-        private Task<List<StoryPoint>> PopulateStoryTree()
+        private List<StoryPoint> PopulateStoryTree()
         {
             return _dataAccessor.FetchAllStoryPoints();
         }
@@ -144,24 +143,16 @@ namespace YouDecide.Domain
             if (_currentStoryParents.Count > 1)
             {
                 _currentStoryParents.Remove(MostRecentParent());
-
-                LoadOptions();
             }
-            else
-            {
-                LoadOptions();
-            }
+            
+            LoadOptions();
         }
 
-        public async Task<GameState> GetPreviousOptions(string smsCommand)
+        public void GetPreviousOptions(string smsCommand)
         {
-            GameState result = null;
-
             GoBack();
 
-            result = UpdateAndReturnCurrentGameState();
-
-            return result;
+            UpdateAndReturnCurrentGameState();
         }
 
         public void GoForward(int optionNumber)
@@ -171,32 +162,28 @@ namespace YouDecide.Domain
             LoadOptions();
         }
 
-        public GameState GetNextOptions(int optionNumber)
+        public void GetNextOptions(int optionNumber)
         {
-            GameState result;
-
             if (optionNumber > 0 && optionNumber <= _currentStoryPoints.Count)
             {
                 GoForward(optionNumber);
                 AdjustStoryPointsIfDead();
-                result = UpdateAndReturnCurrentGameState();
+                UpdateAndReturnCurrentGameState();
             }
             else
             {
-                result = new GameState
-                {
-                    GameOptions = new List<GameOption>
+                _currentGameState = new GameState
                     {
-                        new GameOption
-                        {
-                            OptionNumber = 0,
-                            Option = "Can't find specified option number."
-                        }
-                    }
-                }; 
+                        GameOptions = new List<GameOption>
+                            {
+                                new GameOption
+                                    {
+                                        OptionNumber = 0,
+                                        Option = "Can't find specified option number."
+                                    }
+                            }
+                    };
             }
-
-            return result;
         }
 
         private void AdjustStoryPointsIfDead()
@@ -214,20 +201,19 @@ namespace YouDecide.Domain
             return (_currentStoryPoints.Count == 1) && (!_currentStoryPoints[0].Child.Contains("WIN"));
         }
 
-        private GameState UpdateAndReturnCurrentGameState()
+        private void UpdateAndReturnCurrentGameState()
         {
-            var currentGameState = new GameState
-                {
-                    History = GetHistory() + " " + _historySuffix,
-                    DeathlyDeathText = _deathlyDeathText,
-                    GameOptions = new List<GameOption>()
-                };
+            _currentGameState.History = GetHistory() + " " + _historySuffix;
+            _currentGameState.DeathlyDeathText = _deathlyDeathText;
+            _currentGameState.GameOptions = new List<GameOption>();
+            _currentGameState.Parents = _currentStoryParents;
+            _currentGameState.Points = _currentStoryPoints;
 
             if (_currentStoryPoints.Count > 0)
             {
-                for (int optionCount = 1; optionCount <= _currentStoryPoints.Count; optionCount++)
+                for (var optionCount = 1; optionCount <= _currentStoryPoints.Count; optionCount++)
                 {
-                    currentGameState.GameOptions.Add(new GameOption
+                    _currentGameState.GameOptions.Add(new GameOption
                     {
                         OptionNumber = optionCount,
                         Option = _currentStoryPoints[optionCount - 1].Child
@@ -238,19 +224,17 @@ namespace YouDecide.Domain
             {
                 // Now that we have the AdjustStoryPointsIfDead method, this code should never be hit. 
                 // But leaving it here just in case.
-                currentGameState.GameOptions.Add(new GameOption
+                _currentGameState.GameOptions.Add(new GameOption
                 {
                     OptionNumber = 0,
                     Option = "There is no point selecting this option. YOU ARE DEAD (you fool). But you can come back to life if you go back (cos we're nice like that)."
                 });
             }
-
-            return currentGameState;
         }
 
         private string GetHistory()
         {
-            string history =
+            var history =
                 _currentStoryParents.Select(x => x.Parent == "nothing" ? "" : x.Child)
                                     .Aggregate((current, next) => string.Format("{0} {1}", current, next));
 
@@ -281,21 +265,14 @@ namespace YouDecide.Domain
                 options = _currentStoryPoints.Count == 1 ? "<br/>" : "Your options are...<br/><br/><br/><br/>";
                 foreach (var storyPoint in _currentStoryPoints)
                 {
-                    string either = "Either... ";
-                    string or = "Or... ";
+                    const string either = "Either... ";
+                    const string or = "Or... ";
 
-                    int currentIndex = _currentStoryPoints.IndexOf(storyPoint);
-                    string prefix = "";
+                    var currentIndex = _currentStoryPoints.IndexOf(storyPoint);
+                    var prefix = "";
                     if (_currentStoryPoints.Count > 1)
                     {
-                        if (currentIndex == 0)
-                        {
-                            prefix = string.Format("{0}{1}. ", either, currentIndex + 1);
-                        }
-                        else
-                        {
-                            prefix = string.Format("{0}{1}. ", or, currentIndex + 1);
-                        }
+                        prefix = string.Format("{0}{1}. ", currentIndex == 0 ? either : or, currentIndex + 1);
                     }
 
                     options = options + string.Format("{0}{1}<br/><br/>",
