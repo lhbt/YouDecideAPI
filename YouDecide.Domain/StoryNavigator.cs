@@ -85,7 +85,7 @@ namespace YouDecide.Domain
                 catch (KeyNotFoundException ex)
                 {
                     //GetPreviousOptions();
-                    string errorMessage = string.Format("Oh come on, {0}?? That's just plain wrong.", smsMessage);
+                    string errorMessage = string.Format("Oh come on, '{0}'?? That's just plain wrong.", smsMessage);
                     _currentGameState.Gif = "you-are-dumb.gif";
                     _currentGameState.DeathlyDeathText = errorMessage;
                 }
