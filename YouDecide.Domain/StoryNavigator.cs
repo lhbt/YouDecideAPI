@@ -19,6 +19,7 @@ namespace YouDecide.Domain
         private List<StoryPoint> _currentStoryParents;
         private GameState _currentGameState;
         private string _deathlyDeathText;
+        private string _gif;
         private string _historySuffix;
         private string _gameID;
 
@@ -153,6 +154,7 @@ namespace YouDecide.Domain
         public void InitialiseTurn()
         {
             _deathlyDeathText = "";
+            _gif = "";
             _historySuffix = "";
         }
 
@@ -214,6 +216,7 @@ namespace YouDecide.Domain
             if (WeAreDead())
             {
                 _deathlyDeathText = _currentStoryPoints[0].Child;
+                _gif = _currentStoryPoints[0].Gif;
                 _historySuffix = _currentStoryPoints[0].Parent;
                 GoBack();
             }
@@ -229,6 +232,7 @@ namespace YouDecide.Domain
             _currentGameState.GameId = _gameID;
             _currentGameState.History = GetHistory() + " " + _historySuffix;
             _currentGameState.DeathlyDeathText = _deathlyDeathText;
+            _currentGameState.Gif = _gif;
             _currentGameState.GameOptions = new List<GameOption>();
             _currentGameState.Parents = _currentStoryParents;
             _currentGameState.Points = _currentStoryPoints;

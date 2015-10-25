@@ -42,7 +42,7 @@
 {"_id": "043","Parent" : "You close your eyes. You don't want any more marbles.","Child": "You open your eyes again, and turn left.","Gif": ""}
 {"_id": "044","Parent" : "You open your eyes again, and turn left.","Child": "You run down the corridor.","Gif": ""}
 {"_id": "045","Parent" : "You run down the corridor.","Child": "Uh-oh, there's a horde of sleep-deprived developers running towards you.","Gif": ""}
-{"_id": "046","Parent" : "Uh-oh, there's a horde of sleep-deprived developers running towards you.","Child": "If you have a lollipop, you can spin it round your head like a sceptre and become Sailor Moon. But only if you have a lollipop. Don't cheat!","Gif": ""}
+{"_id": "046","Parent" : "Uh-oh, there's a horde of sleep-deprived developers running towards you.","Child": "If you have a lollipop, you can spin it round your head like a sceptre and become Sailor Moon. But only if you have a lollipop. Don't cheat!","Gif": "sailor_moon.gif"}
 {"_id": "047","Parent" : "If you have a lollipop, you can spin it round your head like a sceptre and become Sailor Moon. But only if you have a lollipop. Don't cheat!","Child": "Woohoo, now you're Sailor Moon! But you're still dead. Goodbye.","Gif": ""}
 {"_id": "048","Parent" : "Uh-oh, there's a horde of sleep-deprived developers running towards you.","Child": "You curl yourself up into a ball.","Gif": ""}
 {"_id": "049","Parent" : "You curl yourself up into a ball.","Child": "You are crushed to death. Oops.","Gif": ""}

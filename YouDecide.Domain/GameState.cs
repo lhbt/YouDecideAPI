@@ -15,6 +15,8 @@ namespace YouDecide.Domain
 
         public string GameId { get; set; }
 
+        public string Gif { get; set; }
+
         public List<GameOption> GameOptions { get; set; }
 
         public List<StoryPoint> Points { get; set; }
