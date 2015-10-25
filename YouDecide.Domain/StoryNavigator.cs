@@ -20,6 +20,7 @@ namespace YouDecide.Domain
         private GameState _currentGameState;
         List<StoryPoint> _currentStoryParents;
         private string _deathlyDeathText;
+        private string _historySuffix;
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
@@ -197,6 +198,7 @@ namespace YouDecide.Domain
             _currentGameState = new GameState();
 
             _deathlyDeathText = "";
+            _historySuffix = "";
 
             return PopulateStoryTree();
         }
@@ -210,7 +212,7 @@ namespace YouDecide.Domain
         {
             if (_currentStoryParents.Count > 1)
             {
-                _currentStoryParents.Remove(_currentStoryParents[_currentStoryParents.Count - 1]);
+                _currentStoryParents.Remove(MostRecentParent());
 
                 LoadOptions();
             }
@@ -233,12 +235,9 @@ namespace YouDecide.Domain
 
         public void GoForward(int optionNumber)
         {
-            if (optionNumber > 0 && optionNumber <= _currentStoryPoints.Count)
-            {
-                _currentStoryParents.Add(_currentStoryPoints[optionNumber - 1]);
+            _currentStoryParents.Add(_currentStoryPoints[optionNumber - 1]);
 
-                LoadOptions();
-            }
+            LoadOptions();
         }
 
         public GameState GetNextOptions(int optionNumber)
@@ -274,6 +273,7 @@ namespace YouDecide.Domain
             if (WeAreDead())
             {
                 _deathlyDeathText = _currentStoryPoints[0].Child;
+                _historySuffix = _currentStoryPoints[0].Parent;
                 GoBack();
             }
         }
@@ -287,7 +287,7 @@ namespace YouDecide.Domain
         {
             var currentGameState = new GameState
                 {
-                    History = GetHistory(),
+                    History = GetHistory() + " " + _historySuffix,
                     DeathlyDeathText = _deathlyDeathText,
                     GameOptions = new List<GameOption>()
                 };
@@ -305,6 +305,8 @@ namespace YouDecide.Domain
             }
             else
             {
+                // Now that we have the AdjustStoryPointsIfDead method, this code should never be hit. 
+                // But leaving it here just in case.
                 currentGameState.GameOptions.Add(new GameOption
                 {
                     OptionNumber = 0,
@@ -326,7 +328,17 @@ namespace YouDecide.Domain
 
         private void LoadOptions()
         {
-            _currentStoryPoints = _storyTree.Where(x => x.Parent == _currentStoryParents[_currentStoryParents.Count - 1].Child).ToList();
+            _currentStoryPoints = FindTheChildrenOfTheMostRecentParent();
+        }
+
+        private List<StoryPoint> FindTheChildrenOfTheMostRecentParent()
+        {
+            return _storyTree.Where(x => x.Parent == MostRecentParent().Child).ToList();
+        }
+
+        private StoryPoint MostRecentParent()
+        {
+            return _currentStoryParents[_currentStoryParents.Count - 1];
         }
 
         private string GetOptionsNicelyFormatted()
