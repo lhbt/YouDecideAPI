@@ -152,8 +152,8 @@ namespace YouDecide.Domain
         {
             _currentGameState = LoadGameState(gameId);
 
-            _currentStoryParents = _currentGameState.Parents;
-            _currentStoryPoints = _currentGameState.Points;
+            _currentStoryParents = _currentGameState.Parents ?? new List<StoryPoint>();
+            _currentStoryPoints = _currentGameState.Points ?? new List<StoryPoint>();
 
             _deathlyDeathText = "";
             _gif = "";
