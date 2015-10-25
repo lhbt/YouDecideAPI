@@ -45,6 +45,7 @@ namespace YouDecide.Domain
 
             InitialiseGame(_gameId);
 
+            _currentStoryParents.Clear();
             _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
 
             LoadOptions();
@@ -69,8 +70,7 @@ namespace YouDecide.Domain
         public GameState ProcessSMSInputReturningGameState(string smsMessage, string gameId)
         {
             _gameId = gameId;
-            _currentGameState = LoadGameState(gameId);
-            InitialiseTurn();
+            InitialiseTurn(gameId);
 
             if (smsMessage.All(Char.IsDigit))
             {
@@ -136,9 +136,6 @@ namespace YouDecide.Domain
         {
             _storyTree = new List<StoryPoint>();
 
-            _currentStoryParents = new List<StoryPoint>();
-            _currentStoryPoints = new List<StoryPoint>();
-
             _currentGameState = new GameState
                 {
                     GameId = gameId,
@@ -151,8 +148,13 @@ namespace YouDecide.Domain
             _storyTree = PopulateStoryTree();
         }
 
-        public void InitialiseTurn()
+        public void InitialiseTurn(string gameId)
         {
+            _currentGameState = LoadGameState(gameId);
+
+            _currentStoryParents = _currentGameState.Parents;
+            _currentStoryPoints = _currentGameState.Points;
+
             _deathlyDeathText = "";
             _gif = "";
             _historySuffix = "";

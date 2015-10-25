@@ -13,7 +13,7 @@ namespace YouDecideAPI
         // For more information https://github.com/NancyFx/Nancy/wiki/Bootstrapper
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
-            container.Register<IStoryNavigator, StoryNavigator>().AsSingleton();
+            container.Register<IStoryNavigator, StoryNavigator>().AsMultiInstance();
             container.Register<IDataAccess, MongoDataAccess>().AsMultiInstance();
         }
     }
