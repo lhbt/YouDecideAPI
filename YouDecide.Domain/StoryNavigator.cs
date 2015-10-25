@@ -135,7 +135,7 @@ namespace YouDecide.Domain
         public void InitialiseGame(string gameId)
         {
             _storyTree = new List<StoryPoint>();
-
+            _currentStoryParents = new List<StoryPoint>();
             _currentGameState = new GameState
                 {
                     GameId = gameId,
