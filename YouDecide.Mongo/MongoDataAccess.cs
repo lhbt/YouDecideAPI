@@ -89,7 +89,7 @@ namespace YouDecide.Mongo
                 Database.GetCollection<GameState>(GameCollectionName)
                         .Find((state => state.GameId == gameId)).FirstOrDefaultAsync().Result;
 
-            return gameState ?? new GameState { GameId = gameId };
+            return gameState ?? new GameState { GameId = gameId, DeathlyDeathText = "", History = "" };
         }
 
         public async Task<List<BsonDocument>> TestFilterData()
