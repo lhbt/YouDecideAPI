@@ -13,7 +13,7 @@ namespace YouDecide.Domain
         public string DeathlyDeathText { get; set; }
         public List<GameOption> GameOptions { get; set; }
 
-        public int GameId { get; set; }
+        public string GameId { get; set; }
 
         public List<StoryPoint> Points { get; set; }
 

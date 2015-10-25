@@ -16,8 +16,8 @@ namespace YouDecide.Mongo
         private const string StoryCollectionName = "MasterStory_mongo";
         private const string GameCollectionName = "gameStates";
 
-        private const string MongoUrl = "mongodb://localhost:27017/test";
-        //private const string MongoUrl = "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
+        //private const string MongoUrl = "mongodb://localhost:27017/test";
+        private const string MongoUrl = "mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m";
 
         public MongoDataAccess()
         {
@@ -48,19 +48,37 @@ namespace YouDecide.Mongo
             return retrievedData;
         }
 
-        public Task UpdateGameParents(List<StoryPoint> parents, string gameId)
+        public async Task UpdateGameState(string gameId)
         {
+            var gameState = new GameState
+            {
+                GameId = gameId
+            };
 
-            var filter = Builders<GameState>.Filter.Eq("GameId",gameId);
-            var update = Builders<GameState>.Update.Set("Parents", parents);
-            return Database.GetCollection<GameState>(GameCollectionName).UpdateOneAsync(filter, update);
+            await Database.GetCollection<GameState>(GameCollectionName).InsertOneAsync(gameState);
         }
 
-        public Task UpdateGamePoints(List<StoryPoint> points, string gameId)
+        public Task<List<GameState>> GetGameState(string gameId)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("GameId", gameId);
-            var update = Builders<BsonDocument>.Update.Set("Points", points);
-            return Database.GetCollection<BsonDocument>(GameCollectionName).UpdateOneAsync(filter, update);
+            return Database.GetCollection<GameState>(GameCollectionName).Find((state => state.GameId == gameId)).ToListAsync();
+        }
+
+        public async Task UpdateGameParents(List<StoryPoint> parents, string gameId)
+        {
+            var gameState = Database.GetCollection<GameState>(GameCollectionName).Find((state => state.GameId == gameId)).ToListAsync().Result.First();
+
+            gameState.Parents = parents;
+            
+            await Database.GetCollection<GameState>(GameCollectionName).ReplaceOneAsync(x => x.GameId == gameId, gameState);
+        }
+
+        public async Task UpdateGamePoints(List<StoryPoint> points, string gameId)
+        {
+            var gameState = Database.GetCollection<GameState>(GameCollectionName).Find((state => state.GameId == gameId)).ToListAsync().Result.First();
+
+            gameState.Points = points;
+
+            await Database.GetCollection<GameState>(GameCollectionName).ReplaceOneAsync(x => x.GameId == gameId, gameState);
         }
 
         public async Task<List<StoryPoint>> GetGameStoryPoints(string gameId)
@@ -100,35 +118,5 @@ namespace YouDecide.Mongo
             var collection = Database.GetCollection<BsonDocument>(StoryCollectionName);
             await collection.InsertOneAsync(document);
         }
-
-        public async Task UpdateGameState(int gameId)
-        {
-            var gameState = new GameState
-            {
-                GameId = 1234,
-                GameOptions = new List<GameOption>
-                        {
-                            new GameOption
-                                {
-                                    Option = "foo option",
-                                    OptionNumber = 1
-                                },
-                            new GameOption
-                                {
-                                    Option = "bar option",
-                                    OptionNumber = 2
-                                },
-                        },
-                History = "NOFING M8"
-            };
-
-            await Database.GetCollection<GameState>(GameCollectionName).InsertOneAsync(gameState);
-        }
-
-        public Task<List<GameState>> GetGameState(int gameId)
-        {
-            return Database.GetCollection<GameState>(GameCollectionName).Find((state => state.GameId == gameId)).ToListAsync();
-        }
-
     }
 }
