@@ -21,7 +21,7 @@ namespace YouDecide.Domain
         private string _deathlyDeathText;
         private string _gif;
         private string _historySuffix;
-        private string _gameID;
+        private string _gameId;
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
@@ -41,9 +41,9 @@ namespace YouDecide.Domain
 
         private void StartGame(string smsCommand)
         {
-            _dataAccessor.DeleteGameState(_gameID);
+            _dataAccessor.DeleteGameState(_gameId);
 
-            InitialiseGame("0");
+            InitialiseGame(_gameId);
 
             _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
 
@@ -61,14 +61,14 @@ namespace YouDecide.Domain
             var api = new API("6f7e73dd28bf6022c1a988a884c880f283830ece");
             api.Send(new SMS
             {
-                To = _gameID, 
-                Message = string.Format("Your game is available at \"http://52.18.191.88/#{0}\", Have Fun!", this._gameID) 
+                To = _gameId, 
+                Message = string.Format("Your game is available at \"http://52.18.191.88/#{0}\", Have Fun!", _gameId) 
             });
         }
 
         public GameState ProcessSMSInputReturningGameState(string smsMessage, string gameId)
         {
-            _gameID = gameId;
+            _gameId = gameId;
             _currentGameState = LoadGameState(gameId);
             InitialiseTurn();
 
@@ -95,16 +95,6 @@ namespace YouDecide.Domain
         {
             gameState.GameId = gameId;
             _dataAccessor.UpdateGameState(gameState);
-        }
-
-        private void LoadStoryParentsForMultiPlayer(string gameId)
-        {
-            _currentStoryParents = _dataAccessor.GetGameStoryParents(gameId);
-        }
-
-        private void LoadStoryPointsForMultiPlayer(string gameId)
-        {
-            _currentStoryPoints = _dataAccessor.GetGameStoryPoints(gameId);
         }
 
         public string ProcessSMSInput(string smsMessage, string gameId)
@@ -229,7 +219,7 @@ namespace YouDecide.Domain
 
         private void UpdateAndReturnCurrentGameState()
         {
-            _currentGameState.GameId = _gameID;
+            _currentGameState.GameId = _gameId;
             _currentGameState.History = GetHistory() + " " + _historySuffix;
             _currentGameState.DeathlyDeathText = _deathlyDeathText;
             _currentGameState.Gif = _gif;
