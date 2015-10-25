@@ -13,5 +13,7 @@ namespace YouDecide.Domain
         List<StoryPoint> GetGameStoryPoints(string gameId);
         List<StoryPoint> GetGameStoryParents(string gameId);
         GameState GetCurrentGameState(string gameId);
+
+        void DeleteGameState(string gameId);
     }
 }

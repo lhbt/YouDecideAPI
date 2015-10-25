@@ -12,7 +12,9 @@ namespace YouDecideAPI.Modules
             {
                 string smsMessage = Request.Query["content"];
 
-                var currentState = storyNavigator.ProcessSMSInputReturningGameState(smsMessage, "0");
+                string id = Request.Query["from"];
+
+                var currentState = storyNavigator.ProcessSMSInputReturningGameState(smsMessage, id);
 
                 return JsonConvert.SerializeObject(currentState);
 

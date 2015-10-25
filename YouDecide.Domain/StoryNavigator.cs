@@ -17,6 +17,7 @@ namespace YouDecide.Domain
         private GameState _currentGameState;
         private string _deathlyDeathText;
         private string _historySuffix;
+        private string _gameID;
 
         public StoryNavigator(IDataAccess dataAccessor)
         {
@@ -36,6 +37,8 @@ namespace YouDecide.Domain
 
         private void StartGame(string smsCommand)
         {
+            _dataAccessor.DeleteGameState(_gameID);
+
             GameInitialise("0");
 
             _currentStoryParents.Add(_storyTree.First(x => x.Parent == "nothing"));
@@ -49,8 +52,8 @@ namespace YouDecide.Domain
 
         public GameState ProcessSMSInputReturningGameState(string smsMessage, string gameId)
         {
-            LoadStoryParentsForMultiPlayer(gameId);
-            LoadStoryPointsForMultiPlayer(gameId);
+            _gameID = gameId;
+            _currentGameState = LoadGameState(gameId);
 
             if (smsMessage.All(Char.IsDigit))
             {
@@ -65,6 +68,11 @@ namespace YouDecide.Domain
             StoreGameState(_currentGameState, gameId);
 
             return _currentGameState;
+        }
+
+        private GameState LoadGameState(string gameId)
+        {
+            return _dataAccessor.GetCurrentGameState(gameId);
         }
 
         private void StoreGameState(GameState gameState, string gameId)
@@ -203,6 +211,7 @@ namespace YouDecide.Domain
 
         private void UpdateAndReturnCurrentGameState()
         {
+            _currentGameState.GameId = _gameID;
             _currentGameState.History = GetHistory() + " " + _historySuffix;
             _currentGameState.DeathlyDeathText = _deathlyDeathText;
             _currentGameState.GameOptions = new List<GameOption>();

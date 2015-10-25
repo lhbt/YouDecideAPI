@@ -63,5 +63,11 @@ namespace YouDecide.Mongo
             var gameState = Database.GetCollection<GameState>(GameCollectionName).Find(query).FirstOrDefault();
             return gameState ?? new GameState { GameId = gameId, DeathlyDeathText = "", History = "" };
         }
+
+        public void DeleteGameState(string gameId)
+        {
+            var query = Query<GameState>.EQ(x => x.GameId, gameId); 
+            Database.GetCollection<GameState>(GameCollectionName).Remove(query);
+        }
     }
 }
