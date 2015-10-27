@@ -1,6 +1,6 @@
 {"_id": "001","Parent" : "nothing","Child": "In the beginning . . .","Gif": ""}
-{"_id": "003","Parent" : "In the beginning . . .","Child": "In the beginning, there was a word. And the word was","Gif": ""}
-{"_id": "004","Parent" : "In the beginning, there was a word. And the word was","Child": "God.","Gif": ""}
+{"_id": "003","Parent" : "In the beginning . . .","Child": "In the beginning, there was the word. And the word was . . .","Gif": ""}
+{"_id": "004","Parent" : "In the beginning, there was the word. And the word was . . .","Child": "God.","Gif": ""}
 {"_id": "005","Parent" : "God.","Child": "God was a small shy geek.","Gif": ""}
 {"_id": "006","Parent" : "God was a small shy geek.","Child": "All God wanted was to be loved.","Gif": ""}
 {"_id": "007","Parent" : "All God wanted was to be loved.","Child": "His plan was to make himself lovable by growing a beard.","Gif": ""}
@@ -177,9 +177,9 @@
 {"_id": "178","Parent" : "You decide that your mission is to identify the slaves and free them from her tyranny.","Child": "You turn left.","Gif": ""}
 {"_id": "179","Parent" : "God.","Child": "God was a pigeon.","Gif": ""}
 {"_id": "180","Parent" : "God was a pigeon.","Child": "If only that were true. But it isn't. You lose.","Gif": ""}
-{"_id": "181","Parent" : "In the beginning, there was a word. And the word was","Child": "Constantinople.","Gif": ""}
+{"_id": "181","Parent" : "In the beginning, there was the word. And the word was . . .","Child": "Constantinople.","Gif": ""}
 {"_id": "182","Parent" : "Constantinople.","Child": "No it wasn't. Goodbye.","Gif": ""}
-{"_id": "183","Parent" : "In the beginning, there was a word. And the word was","Child": "Floccinaucinihilipilification.","Gif": ""}
+{"_id": "183","Parent" : "In the beginning, there was the word. And the word was . . .","Child": "Floccinaucinihilipilification.","Gif": ""}
 {"_id": "184","Parent" : "Floccinaucinihilipilification.","Child": "This is the longest word in the English language.","Gif": ""}
 {"_id": "185","Parent" : "This is the longest word in the English language.","Child": "No it isn't. Loser.","Gif": ""}
 {"_id": "186","Parent" : "Floccinaucinihilipilification.","Child": "This word has twenty-five syllables.","Gif": ""}
