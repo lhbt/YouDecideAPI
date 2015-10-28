@@ -54,7 +54,7 @@ namespace YouDecide.Domain
 
             _dataAccessor.CreateGameState(_currentGameState);
 
-            SendUserSMS();
+            //SendUserSMS();
         }
 
         private void SendUserSMS()
