@@ -2,8 +2,8 @@
 HackManchester 2015 Clockwork challenge!
 LateRooms team - Clare Sudbery, Laurent Humbert, Danny Parkinson
 
-The phone number you have to send texts to:
-	+44 7860 033 661
+The phone number you have to send texts to:<br />
+	+44 7860 033 661<br />
 Continuous deployment - AppHarbor:
 	https://appharbor.com/applications/youdecideapi
 Connection strings:
