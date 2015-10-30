@@ -5,7 +5,9 @@ LateRooms team - Clare Sudbery, Laurent Humbert, Danny Parkinson
 The phone number you have to send texts to:<br />
 	+44 7860 033 661<br />
 Continuous deployment - AppHarbor:
+
 	https://appharbor.com/applications/youdecideapi
+	
 Connection strings:
 	Server: mongodb://appharbor_5tjq291m:kkj4e5ighno0r7cl58em1u7q0a@ds041494.mongolab.com:41494/appharbor_5tjq291m
 	Local: mongodb://localhost:27017/test
