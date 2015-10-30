@@ -64,5 +64,3 @@ Deploying the front end from the command line:
 	simply drop the file in /YouDecide/
 Importing the db locally from the command line:
 	c:\mongodb\bin\mongoimport --db test --collection MasterStory_mongo --drop --file MasterStory_mongo.json
-
-Clare's pw for Hack Mcr wifi: eys3VSDftzFZ
